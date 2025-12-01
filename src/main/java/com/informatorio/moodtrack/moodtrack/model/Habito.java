@@ -21,7 +21,6 @@ public class Habito {
 
     public Habito () {}
 
-    public Habito(String nombre, String email) {}
     public Habito(Long id, String descripcion, NivelDeImportanciaEnum nivelDeImportanciaEnum, List<EntradaDiaria> entradas) {
         this.id = id;
         this.descripcion = descripcion;
