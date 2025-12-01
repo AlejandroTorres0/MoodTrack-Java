@@ -13,6 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class HabitoCreateDto {
+    @NotNull(message = "La descripción no puede ser nula")
     @NotBlank(message = "La descripción no puede ser vacia")
     private String descripcion;
 
