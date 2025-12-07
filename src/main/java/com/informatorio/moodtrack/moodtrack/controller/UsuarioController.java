@@ -2,7 +2,7 @@ package com.informatorio.moodtrack.moodtrack.controller;
 
 import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioCreateDto;
 import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioDto;
-import com.informatorio.moodtrack.moodtrack.model.Usuario;
+import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioResumenDto;
 import com.informatorio.moodtrack.moodtrack.service.usuario.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +38,17 @@ public class UsuarioController {
         if (usuario.isPresent()) {
             return ResponseEntity.ok(usuario.get());
 
+        }else{
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/{id}/resumen")
+    public ResponseEntity<UsuarioResumenDto> getResumenUsuario(@PathVariable(name = "id") UUID id) {
+        Optional<UsuarioResumenDto> usuarioResumen = usuarioService.getResumenUsuario(id);
+
+        if (usuarioResumen.isPresent()) {
+            return ResponseEntity.ok(usuarioResumen.get());
         }else{
             return ResponseEntity.notFound().build();
         }

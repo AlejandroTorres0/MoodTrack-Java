@@ -2,7 +2,10 @@ package com.informatorio.moodtrack.moodtrack.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -72,5 +75,11 @@ public class Usuario {
 
     public void setEntradasDiarias(List<EntradaDiaria> entradasDiarias) {
         this.entradasDiarias = entradasDiarias;
+    }
+
+    public Optional<LocalDate> getFechaUltimaEntrada() {
+        return this.entradasDiarias.stream()
+                .map(EntradaDiaria::getFecha)
+                .max(Comparator.naturalOrder());
     }
 }

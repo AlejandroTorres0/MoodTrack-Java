@@ -2,6 +2,7 @@ package com.informatorio.moodtrack.moodtrack.service.usuario.impl;
 
 import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioCreateDto;
 import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioDto;
+import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioResumenDto;
 import com.informatorio.moodtrack.moodtrack.mapper.perfil.PerfilMapper;
 import com.informatorio.moodtrack.moodtrack.mapper.usuario.UsuarioMapper;
 import com.informatorio.moodtrack.moodtrack.model.PerfilUsuario;
@@ -98,5 +99,25 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
 
         return false;
+    }
+
+    @Override
+    public Optional<UsuarioResumenDto> getResumenUsuario(UUID id) {
+        Optional<Usuario> usuarioEntity = usuarioRepository.findById(id);
+
+        if (usuarioEntity.isPresent()) {
+            UsuarioResumenDto usuarioResumenDto = new UsuarioResumenDto();
+            Usuario usuario = usuarioEntity.get();
+
+            usuarioResumenDto.setNombre(usuario.getNombre());
+            usuarioResumenDto.setEmail(usuario.getEmail());
+            usuarioResumenDto.setColorFavorito(usuario.getPerfil().getColorFavorito());
+            usuarioResumenDto.setCantidadEntradas(usuario.getEntradasDiarias().size());
+            usuario.getFechaUltimaEntrada().ifPresent(fecha -> usuarioResumenDto.setFechaUltimaEntrada(fecha));
+
+            return Optional.of(usuarioResumenDto);
+        }else {
+            return Optional.empty();
+        }
     }
 }
