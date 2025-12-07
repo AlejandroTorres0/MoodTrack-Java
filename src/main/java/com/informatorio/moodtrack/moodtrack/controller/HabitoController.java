@@ -2,7 +2,6 @@ package com.informatorio.moodtrack.moodtrack.controller;
 
 import com.informatorio.moodtrack.moodtrack.dto.habito.HabitoCreateDto;
 import com.informatorio.moodtrack.moodtrack.dto.habito.HabitoDto;
-import com.informatorio.moodtrack.moodtrack.model.Habito;
 import com.informatorio.moodtrack.moodtrack.service.habito.HabitoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
