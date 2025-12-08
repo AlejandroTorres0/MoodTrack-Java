@@ -1,5 +1,6 @@
 package com.informatorio.moodtrack.moodtrack.dto.entradadiaria;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +19,8 @@ public class EntradaDiariaDto {
     private Long id;
     private LocalDate fecha;
     private String reflexion;
+
+    @JsonProperty("usuario")
     private UsuarioDto usuarioDto;
     private String emocion;
     private List<String> habitosDescripciones;
