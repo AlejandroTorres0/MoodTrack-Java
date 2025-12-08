@@ -1,8 +1,10 @@
 package com.informatorio.moodtrack.moodtrack.controller;
 
+import com.informatorio.moodtrack.moodtrack.dto.entradadiaria.EntradaDiariaDto;
 import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioCreateDto;
 import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioDto;
 import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioResumenDto;
+import com.informatorio.moodtrack.moodtrack.service.entradadiaria.EntradaDiariaService;
 import com.informatorio.moodtrack.moodtrack.service.usuario.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +22,12 @@ import java.util.UUID;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
+    private final EntradaDiariaService entradaDiariaService;
 
     @Autowired
-    public UsuarioController(UsuarioService usuarioService) {
+    public UsuarioController(UsuarioService usuarioService, EntradaDiariaService entradaDiariaService) {
         this.usuarioService = usuarioService;
+        this.entradaDiariaService = entradaDiariaService;
     }
 
     @GetMapping
@@ -49,6 +53,18 @@ public class UsuarioController {
 
         if (usuarioResumen.isPresent()) {
             return ResponseEntity.ok(usuarioResumen.get());
+        }else{
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/{id}/entradas-diarias")
+    public ResponseEntity<List<EntradaDiariaDto>> getEntradasUsuario(@PathVariable(name = "id") UUID id) {
+        Optional<UsuarioDto> usuario = usuarioService.getUsuarioById(id);
+
+        if (usuario.isPresent()) {
+            List<EntradaDiariaDto> entradas = entradaDiariaService.getEntradasByUsuarioId(id);
+            return ResponseEntity.ok(entradas);
         }else{
             return ResponseEntity.notFound().build();
         }

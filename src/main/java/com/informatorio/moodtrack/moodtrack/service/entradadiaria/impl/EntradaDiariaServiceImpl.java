@@ -60,4 +60,11 @@ public class EntradaDiariaServiceImpl implements EntradaDiariaService {
         log.info("Entrada guardado exitosamente");
         return EntradaDiariaMapper.toDto( saved );
     }
+
+    @Override
+    public List<EntradaDiariaDto> getEntradasByUsuarioId(UUID id) {
+        List<EntradaDiaria> entradas = entradaDiariaRepository.getEntradasByUsuarioId(id);
+        return EntradaDiariaMapper.toDtoList(entradas);
+
+    }
 }
