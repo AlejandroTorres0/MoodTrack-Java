@@ -17,6 +17,7 @@ public final class UsuarioMapper {
         usuarioDto.setId(usuario.getId());
         usuarioDto.setNombre(usuario.getNombre());
         usuarioDto.setEmail(usuario.getEmail());
+        usuarioDto.setPerfilUsuarioDto(PerfilMapper.toDto(usuario.getPerfil()));
         return usuarioDto;
     };
 
