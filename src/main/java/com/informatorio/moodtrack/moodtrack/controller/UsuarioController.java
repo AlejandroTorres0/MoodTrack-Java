@@ -111,7 +111,7 @@ public class UsuarioController {
     public ResponseEntity<Void> deleteUsuario( @PathVariable(name = "id") UUID id ){
         boolean wasDeleted = usuarioService.deleteUsuario( id );
         if( !wasDeleted ){
-            ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.noContent().build();
     }
