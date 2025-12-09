@@ -4,6 +4,7 @@ import com.informatorio.moodtrack.moodtrack.dto.entradadiaria.EntradaDiariaDto;
 import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioCreateDto;
 import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioDto;
 import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioResumenDto;
+import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioResumenEmocionesDto;
 import com.informatorio.moodtrack.moodtrack.service.entradadiaria.EntradaDiariaService;
 import com.informatorio.moodtrack.moodtrack.service.usuario.UsuarioService;
 import jakarta.validation.Valid;
@@ -55,6 +56,18 @@ public class UsuarioController {
 
         if (usuarioResumen.isPresent()) {
             return ResponseEntity.ok(usuarioResumen.get());
+        }else{
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/{id}/resumen/emociones")
+    public ResponseEntity<UsuarioResumenEmocionesDto> getResumenEmocionesUsuario(@PathVariable(name = "id") UUID id) {
+        log.info("Construyendo resumen emocional para el usuario con id {}", id);
+        Optional<UsuarioResumenEmocionesDto> usuarioResumenEmociones = usuarioService.getResumenEmocionesUsuario(id);
+
+        if (usuarioResumenEmociones.isPresent()) {
+            return ResponseEntity.ok(usuarioResumenEmociones.get());
         }else{
             return ResponseEntity.notFound().build();
         }

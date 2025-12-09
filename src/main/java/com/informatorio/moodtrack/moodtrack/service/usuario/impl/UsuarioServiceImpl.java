@@ -3,8 +3,10 @@ package com.informatorio.moodtrack.moodtrack.service.usuario.impl;
 import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioCreateDto;
 import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioDto;
 import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioResumenDto;
+import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioResumenEmocionesDto;
 import com.informatorio.moodtrack.moodtrack.mapper.perfil.PerfilMapper;
 import com.informatorio.moodtrack.moodtrack.mapper.usuario.UsuarioMapper;
+import com.informatorio.moodtrack.moodtrack.model.EntradaDiaria;
 import com.informatorio.moodtrack.moodtrack.model.PerfilUsuario;
 import com.informatorio.moodtrack.moodtrack.model.Usuario;
 import com.informatorio.moodtrack.moodtrack.repository.usuario.UsuarioRepository;
@@ -13,9 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -117,6 +118,41 @@ public class UsuarioServiceImpl implements UsuarioService {
 
             return Optional.of(usuarioResumenDto);
         }else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<UsuarioResumenEmocionesDto> getResumenEmocionesUsuario(UUID id) {
+        Optional<Usuario> usuarioEntity = usuarioRepository.findById(id);
+        if (usuarioEntity.isPresent()) {
+            UsuarioResumenEmocionesDto usuarioResumenEmocionesDto = new UsuarioResumenEmocionesDto();
+
+            if (usuarioEntity.get().getEntradasDiarias().isEmpty()) {
+                usuarioResumenEmocionesDto.setTotalEntradas(0);
+                usuarioResumenEmocionesDto.setPorcentajesPorEmocion(Collections.emptyMap());
+                return Optional.of(usuarioResumenEmocionesDto);
+            }
+
+            int totalEntradas =  usuarioEntity.get().getEntradasDiarias().size();
+
+            Map<String, Long> conteoPorEmocion = usuarioEntity.get().getEntradasDiarias().stream()
+                    .collect(Collectors.groupingBy(
+                            EntradaDiaria::getEmocion,
+                            Collectors.counting()
+                    ));
+
+            Map<String, Double> porcentajesPorEmocion = conteoPorEmocion.entrySet().stream()
+                    .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            entry -> (double) Math.round(entry.getValue() * 10000.0 / totalEntradas) / 100.0
+                    ));
+
+
+            usuarioResumenEmocionesDto.setTotalEntradas(totalEntradas);
+            usuarioResumenEmocionesDto.setPorcentajesPorEmocion(porcentajesPorEmocion);
+            return Optional.of(usuarioResumenEmocionesDto);
+        }else{
             return Optional.empty();
         }
     }
