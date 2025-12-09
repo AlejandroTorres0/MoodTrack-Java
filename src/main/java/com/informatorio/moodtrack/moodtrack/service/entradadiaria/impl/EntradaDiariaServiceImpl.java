@@ -2,6 +2,7 @@ package com.informatorio.moodtrack.moodtrack.service.entradadiaria.impl;
 
 import com.informatorio.moodtrack.moodtrack.dto.entradadiaria.EntradaDiariaCreateDto;
 import com.informatorio.moodtrack.moodtrack.dto.entradadiaria.EntradaDiariaDto;
+import com.informatorio.moodtrack.moodtrack.dto.entradadiaria.EntradaDiariaUpdateDto;
 import com.informatorio.moodtrack.moodtrack.mapper.entradadiaria.EntradaDiariaMapper;
 import com.informatorio.moodtrack.moodtrack.model.EntradaDiaria;
 import com.informatorio.moodtrack.moodtrack.model.Habito;
@@ -66,5 +67,26 @@ public class EntradaDiariaServiceImpl implements EntradaDiariaService {
         List<EntradaDiaria> entradas = entradaDiariaRepository.findEntradasByUsuarioId(id);
         return EntradaDiariaMapper.toDtoList(entradas);
 
+    }
+
+    @Override
+    public EntradaDiariaDto updateEntradaDiaria(Long id, EntradaDiariaUpdateDto updateDto) {
+        Optional<EntradaDiaria> entrada = entradaDiariaRepository.findById(id);
+
+        if(entrada.isPresent()){
+            EntradaDiaria entradaDiariaEntity = entrada.get();
+
+            entradaDiariaEntity.setReflexion(updateDto.getReflexion());
+            entradaDiariaEntity.setEmocion(updateDto.getEmocion());
+            List<Habito> habitos = habitoRepository.findAllById(updateDto.getHabitosIds());
+            entradaDiariaEntity.setHabitos(habitos);
+
+            EntradaDiaria entradaActualizada = entradaDiariaRepository.save(entradaDiariaEntity);
+            log.info("Usuario actualizado con id {}", entradaActualizada.getId());
+
+            return EntradaDiariaMapper.toDto(entradaActualizada);
+        }
+
+        return null;
     }
 }

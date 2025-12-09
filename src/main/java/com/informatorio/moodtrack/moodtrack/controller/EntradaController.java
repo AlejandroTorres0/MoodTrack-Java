@@ -2,6 +2,7 @@ package com.informatorio.moodtrack.moodtrack.controller;
 
 import com.informatorio.moodtrack.moodtrack.dto.entradadiaria.EntradaDiariaCreateDto;
 import com.informatorio.moodtrack.moodtrack.dto.entradadiaria.EntradaDiariaDto;
+import com.informatorio.moodtrack.moodtrack.dto.entradadiaria.EntradaDiariaUpdateDto;
 import com.informatorio.moodtrack.moodtrack.service.entradadiaria.EntradaDiariaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +34,15 @@ public class EntradaController {
             log.error("Error desconocido", e);
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<EntradaDiariaDto> updateEntradaDiaria(@PathVariable(name = "id") Long id, @Valid @RequestBody EntradaDiariaUpdateDto updateDto) {
+        log.info("Solicitud para actualizar la entrada-diaria con id {}", id);
+        EntradaDiariaDto entradaDto = entradaDiariaService.updateEntradaDiaria(id, updateDto);
+        if (entradaDto == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(entradaDto);
     }
 }
