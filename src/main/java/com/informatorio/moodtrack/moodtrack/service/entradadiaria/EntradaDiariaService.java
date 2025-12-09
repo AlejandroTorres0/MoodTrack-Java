@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface EntradaDiariaService {
-    EntradaDiariaDto create(EntradaDiariaCreateDto createDto);
+    EntradaDiariaDto createEntradaDiaria(EntradaDiariaCreateDto createDto);
 
     List<EntradaDiariaDto> getEntradasByUsuarioId(UUID id);
 }

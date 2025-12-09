@@ -8,10 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("api/v1/entrada-diaria")
@@ -22,10 +21,12 @@ public class EntradaController {
     private final EntradaDiariaService entradaDiariaService;
 
     @PostMapping
-    public ResponseEntity<EntradaDiariaDto> crear(@Valid @RequestBody EntradaDiariaCreateDto createDto){
+    public ResponseEntity<EntradaDiariaDto> createEntradaDiaria(@Valid @RequestBody EntradaDiariaCreateDto createDto){
         try {
-            EntradaDiariaDto entradaCreada = entradaDiariaService.create( createDto );
-            return ResponseEntity.ok( entradaCreada );
+            EntradaDiariaDto entradaCreada = entradaDiariaService.createEntradaDiaria( createDto );
+            return ResponseEntity
+                    .created(URI.create("/api/v1/entrada-diaria" + entradaCreada.getId()))
+                    .body(entradaCreada);
         }catch (IllegalArgumentException illegalArgumentException){
             return ResponseEntity.badRequest().build();
         }catch (Exception e){

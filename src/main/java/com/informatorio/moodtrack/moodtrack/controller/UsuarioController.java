@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -49,6 +50,7 @@ public class UsuarioController {
 
     @GetMapping("/{id}/resumen")
     public ResponseEntity<UsuarioResumenDto> getResumenUsuario(@PathVariable(name = "id") UUID id) {
+        log.info("Construyendo resumen para el usuario con id {}", id);
         Optional<UsuarioResumenDto> usuarioResumen = usuarioService.getResumenUsuario(id);
 
         if (usuarioResumen.isPresent()) {
@@ -71,9 +73,11 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioDto> createUsuario(@RequestBody UsuarioCreateDto usuarioCreateDto) {
+    public ResponseEntity<UsuarioDto> createUsuario(@Valid @RequestBody UsuarioCreateDto usuarioCreateDto) {
         UsuarioDto usuarioCreado = usuarioService.createUsuario(usuarioCreateDto);
-        return  ResponseEntity.ok().body(usuarioCreado);
+        return ResponseEntity
+                .created(URI.create("/api/v1/usuarios" + usuarioCreado.getId()))
+                .body(usuarioCreado);
     }
 
     @PutMapping("/{id}")

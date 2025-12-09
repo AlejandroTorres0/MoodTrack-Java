@@ -4,8 +4,10 @@ import com.informatorio.moodtrack.moodtrack.model.EntradaDiaria;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface EntradaDiariaRepository extends JpaRepository<EntradaDiaria, Long> {
-    List<EntradaDiaria> getEntradasByUsuarioId(UUID id);
+    List<EntradaDiaria> findEntradasByUsuarioId(UUID id);
+    Optional<EntradaDiaria> findById(Long id);
 }

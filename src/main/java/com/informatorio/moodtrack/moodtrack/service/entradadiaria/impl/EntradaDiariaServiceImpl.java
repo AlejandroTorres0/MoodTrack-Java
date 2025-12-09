@@ -29,7 +29,7 @@ public class EntradaDiariaServiceImpl implements EntradaDiariaService {
 
 
     @Override
-    public EntradaDiariaDto create(EntradaDiariaCreateDto createDto) {
+    public EntradaDiariaDto createEntradaDiaria(EntradaDiariaCreateDto createDto) {
         log.info("Creando entrada Diaria");
         UUID uuidUsuario = createDto.getUsuarioId();
 
@@ -63,7 +63,7 @@ public class EntradaDiariaServiceImpl implements EntradaDiariaService {
 
     @Override
     public List<EntradaDiariaDto> getEntradasByUsuarioId(UUID id) {
-        List<EntradaDiaria> entradas = entradaDiariaRepository.getEntradasByUsuarioId(id);
+        List<EntradaDiaria> entradas = entradaDiariaRepository.findEntradasByUsuarioId(id);
         return EntradaDiariaMapper.toDtoList(entradas);
 
     }

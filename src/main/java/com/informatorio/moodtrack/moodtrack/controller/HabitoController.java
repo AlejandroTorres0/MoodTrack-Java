@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -28,7 +29,9 @@ public class HabitoController {
     @PostMapping
     public ResponseEntity<HabitoDto> createHabito(@RequestBody HabitoCreateDto habitoCreateDto) {
         HabitoDto habitoCreado =  habitoService.createHabito(habitoCreateDto);
-        return ResponseEntity.ok().body(habitoCreado);
+        return ResponseEntity
+                .created(URI.create("/api/v1/habitos" + habitoCreado.getId()))
+                .body(habitoCreado);
     }
 
 }
