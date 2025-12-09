@@ -33,8 +33,12 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public List<UsuarioDto> getUsuarios() {
-        return usuarioService.getAllUsuarios();
+    public List<UsuarioDto> getUsuarios(
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String colorFavorito
+    ) {
+        return usuarioService.getAllUsuarios(nombre, email, colorFavorito);
     }
 
     @GetMapping("/{id}")

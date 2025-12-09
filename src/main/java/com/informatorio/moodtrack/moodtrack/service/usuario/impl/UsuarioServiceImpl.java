@@ -10,9 +10,11 @@ import com.informatorio.moodtrack.moodtrack.model.EntradaDiaria;
 import com.informatorio.moodtrack.moodtrack.model.PerfilUsuario;
 import com.informatorio.moodtrack.moodtrack.model.Usuario;
 import com.informatorio.moodtrack.moodtrack.repository.usuario.UsuarioRepository;
+import com.informatorio.moodtrack.moodtrack.repository.usuario.specification.UsuarioSpecifications;
 import com.informatorio.moodtrack.moodtrack.service.usuario.UsuarioService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -30,9 +32,22 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public List<UsuarioDto> getAllUsuarios() {
-        List<Usuario> usuarios = usuarioRepository.findAll();
-        return UsuarioMapper.toDtoList(usuarios);
+    public List<UsuarioDto> getAllUsuarios(String nombre, String email, String colorFavorito) {
+        Specification<Usuario> spec = Specification.unrestricted();
+
+        if(nombre != null && !nombre.isBlank()){
+            spec = spec.and(UsuarioSpecifications.nombre( nombre ));
+        }
+        if(email != null && !email.isBlank()){
+            spec = spec.and(UsuarioSpecifications.email( email ));
+        }
+        if(colorFavorito != null && !colorFavorito.isBlank()){
+            spec = spec.and(UsuarioSpecifications.colorFavorito( colorFavorito ));
+        }
+
+        List<Usuario> usuarioList = usuarioRepository.findAll(spec);
+
+        return UsuarioMapper.toDtoList(usuarioList);
     }
 
     @Override

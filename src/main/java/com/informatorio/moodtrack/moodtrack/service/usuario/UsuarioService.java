@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface UsuarioService {
 
-    List<UsuarioDto> getAllUsuarios();
+    List<UsuarioDto> getAllUsuarios(String nombre, String email, String colorFavorito);
     Optional<UsuarioDto> getUsuarioById(UUID id);
 
     UsuarioDto createUsuario(UsuarioCreateDto usuarioCreateDto);
