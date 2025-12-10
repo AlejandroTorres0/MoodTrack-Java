@@ -6,7 +6,6 @@ import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioResumenDto;
 import com.informatorio.moodtrack.moodtrack.dto.usuario.UsuarioResumenEmocionesDto;
 import com.informatorio.moodtrack.moodtrack.mapper.perfil.PerfilMapper;
 import com.informatorio.moodtrack.moodtrack.mapper.usuario.UsuarioMapper;
-import com.informatorio.moodtrack.moodtrack.model.EntradaDiaria;
 import com.informatorio.moodtrack.moodtrack.model.PerfilUsuario;
 import com.informatorio.moodtrack.moodtrack.model.Usuario;
 import com.informatorio.moodtrack.moodtrack.repository.usuario.UsuarioRepository;
@@ -18,7 +17,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -119,56 +117,14 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Optional<UsuarioResumenDto> getResumenUsuario(UUID id) {
-        Optional<Usuario> usuarioEntity = usuarioRepository.findById(id);
-
-        if (usuarioEntity.isPresent()) {
-            UsuarioResumenDto usuarioResumenDto = new UsuarioResumenDto();
-            Usuario usuario = usuarioEntity.get();
-
-            usuarioResumenDto.setNombre(usuario.getNombre());
-            usuarioResumenDto.setEmail(usuario.getEmail());
-            usuarioResumenDto.setColorFavorito(usuario.getPerfil().getColorFavorito());
-            usuarioResumenDto.setCantidadEntradas(usuario.getEntradasDiarias().size());
-            usuario.getFechaUltimaEntrada().ifPresent(fecha -> usuarioResumenDto.setFechaUltimaEntrada(fecha));
-
-            return Optional.of(usuarioResumenDto);
-        }else {
-            return Optional.empty();
-        }
+        return usuarioRepository.findById(id)
+                .map(UsuarioMapper::toResumenDto);
     }
 
     @Override
     public Optional<UsuarioResumenEmocionesDto> getResumenEmocionesUsuario(UUID id) {
-        Optional<Usuario> usuarioEntity = usuarioRepository.findById(id);
-        if (usuarioEntity.isPresent()) {
-            UsuarioResumenEmocionesDto usuarioResumenEmocionesDto = new UsuarioResumenEmocionesDto();
+        return usuarioRepository.findById(id)
+                .map(UsuarioMapper::toResumenEmocionesDto);
 
-            if (usuarioEntity.get().getEntradasDiarias().isEmpty()) {
-                usuarioResumenEmocionesDto.setTotalEntradas(0);
-                usuarioResumenEmocionesDto.setPorcentajesPorEmocion(Collections.emptyMap());
-                return Optional.of(usuarioResumenEmocionesDto);
-            }
-
-            int totalEntradas =  usuarioEntity.get().getEntradasDiarias().size();
-
-            Map<String, Long> conteoPorEmocion = usuarioEntity.get().getEntradasDiarias().stream()
-                    .collect(Collectors.groupingBy(
-                            EntradaDiaria::getEmocion,
-                            Collectors.counting()
-                    ));
-
-            Map<String, Double> porcentajesPorEmocion = conteoPorEmocion.entrySet().stream()
-                    .collect(Collectors.toMap(
-                            Map.Entry::getKey,
-                            entry -> (double) Math.round(entry.getValue() * 10000.0 / totalEntradas) / 100.0
-                    ));
-
-
-            usuarioResumenEmocionesDto.setTotalEntradas(totalEntradas);
-            usuarioResumenEmocionesDto.setPorcentajesPorEmocion(porcentajesPorEmocion);
-            return Optional.of(usuarioResumenEmocionesDto);
-        }else{
-            return Optional.empty();
-        }
     }
 }
